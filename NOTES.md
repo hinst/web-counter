@@ -1,8 +1,11 @@
 # Spring Framework
 
 # Web Server
-* Include `spring-boot-starter-web` from group `org.springframework.boot` to enable web server
-* Set `server.servlet.contextPath=/my-app` to add URL prefix to all endpoints
+* To enable web server, Include `spring-boot-starter-web` from group `org.springframework.boot`
+* To add URL prefix to all endpoints, set `server.servlet.contextPath=/my-app`
+* To retrieve URL query parameter in controller method, use `@RequestParam` annotation on method parameter
+	* Example: `public String myMethod(@RequestParam String input)`
+		* Extracts VALUE from: `http://localhost:8080/endpoint?input=VALUE`
 
 # Annotations
 * Use @Value("${configuration.parameter.key}") on a field to set the value from `application.properties`
