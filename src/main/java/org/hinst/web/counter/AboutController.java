@@ -1,4 +1,4 @@
-package org.hinst.web_counter;
+package org.hinst.web.counter;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
