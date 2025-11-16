@@ -33,7 +33,7 @@ public class CounterController {
 		return "ok";
 	}
 
-	private void increaseCount(String url) {
+	private void increaseCount(@NonNull String url) {
 		synchronized(UrlEntryRepository.locker) {
 			var entry = urlEntryRepository.findById(url).orElseGet(() -> {
 				var newEntry = new UrlEntry();
