@@ -5,7 +5,10 @@
       	<pattern>%date %level [%thread] %logger - %msg%n</pattern>
     	</encoder>
 	</appender>
+
 	<root level="INFO">
 		<appender-ref ref="consoleAppender" />
 	</root>
+
+	<logger name="com.zaxxer.hikari" level="WARN"/>
 </configuration>
