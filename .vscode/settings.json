@@ -2,7 +2,9 @@
 	"java.compile.nullAnalysis.mode": "automatic",
 	"java.configuration.updateBuildConfiguration": "automatic",
 	"cSpell.words": [
+		"Appender",
 		"hinst",
+		"logback",
 		"springframework",
 		"sqlite"
 	]
