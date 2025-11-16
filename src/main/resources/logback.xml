@@ -2,13 +2,20 @@
 <configuration>
   	<appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
     	<encoder>
-      	<pattern>%date %level [%thread] %logger - %msg%n</pattern>
+      		<pattern>%date %level %thread %logger: %msg%n</pattern>
+    	</encoder>
+	</appender>
+  	<appender name="highlightAppender" class="ch.qos.logback.core.ConsoleAppender">
+    	<encoder>
+      		<pattern>%boldCyan(%date) %level %boldCyan(%thread) %logger: %msg%n</pattern>
     	</encoder>
 	</appender>
 
 	<root level="INFO">
-		<appender-ref ref="consoleAppender" />
+		<appender-ref ref="consoleAppender"/>
 	</root>
-
+	<logger name="org.hinst" level="INFO" additivity="false">
+		<appender-ref ref="highlightAppender"/>
+	</logger>
 	<logger name="com.zaxxer.hikari" level="WARN"/>
 </configuration>
