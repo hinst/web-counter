@@ -1,0 +1,1 @@
+docker push hinst/web-counter  || exit /b
