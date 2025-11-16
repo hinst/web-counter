@@ -7,6 +7,7 @@
 		"hinst",
 		"logback",
 		"springframework",
-		"sqlite"
+		"sqlite",
+		"temurin"
 	]
 }
