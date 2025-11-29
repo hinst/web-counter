@@ -62,7 +62,10 @@ public class RiddleController {
 			var index = RandomUtil.getRandomInt(primeNumbers.length);
 			product = (product * primeNumbers[index]) % PRODUCT_LIMIT;
 		}
-		var riddle = new RiddleEntry(RandomUtil.getRandomLong(), Instant.now(), product, STEP_COUNT, primeNumbers.length);
+		var riddle = new RiddleEntry(
+			RandomUtil.getRandomLong(), Instant.now(),
+			product, STEP_COUNT, primeNumbers.length, PRODUCT_LIMIT
+		);
 		riddleEntryRepository.saveNew(riddle);
 		return riddle;
 	}

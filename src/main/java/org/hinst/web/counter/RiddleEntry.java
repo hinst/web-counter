@@ -31,4 +31,7 @@ public class RiddleEntry {
 
 	@Getter
 	private long primeLimit;
+
+	@Getter
+	private long productLimit;
 }
