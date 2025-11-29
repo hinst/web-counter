@@ -25,4 +25,10 @@ public class RiddleEntry {
 
 	@Getter
 	private long product;
+
+	@Getter
+	private long stepCount;
+
+	@Getter
+	private long primeLimit;
 }
