@@ -8,18 +8,16 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.http.CacheControl;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @RestController
@@ -50,8 +48,10 @@ public class RiddleController {
 	}
 
 	@GetMapping("/prime-numbers")
-	public String getMethodName(@RequestParam String param) throws IOException {
-		return primeNumbersFile.getContentAsString(Objects.requireNonNull(StandardCharsets.UTF_8));
+	public ResponseEntity<int[]> getMethodName() throws IOException {
+		return ResponseEntity.ok()
+			.cacheControl(CacheControl.maxAge(1, TimeUnit.HOURS))
+			.body(primeNumbers);
 	}
 
 	@GetMapping("/generate")
