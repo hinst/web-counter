@@ -5,11 +5,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -22,14 +24,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @RestController
 @RequestMapping("/riddle")
+@RequiredArgsConstructor
 public class RiddleController {
 	private static final int PRIME_NUMBER_LIMIT = 1000;
 	private static final int STEP_COUNT = 3;
-	private static final int PRODUCT_LIMIT = 1_000_000;
+	private static final long PRODUCT_LIMIT = 1_000_000;
 
 	@Value("classpath:primeNumbers.json")
 	private Resource primeNumbersFile;
 	private int[] primeNumbers;
+
+	private final RiddleEntryRepository riddleEntryRepository;
 
 	@PostConstruct
 	public void init() {
@@ -51,14 +56,14 @@ public class RiddleController {
 
 	@GetMapping("/generate")
 	@ResponseBody
-	public Riddle generateRiddle() throws NoSuchAlgorithmException {
-		var id = SecureRandom.getInstanceStrong().nextLong();
+	public RiddleEntry generateRiddle() {
 		long product = 1;
 		for (var i = 0; i < STEP_COUNT; ++i) {
-			var index = SecureRandom.getInstanceStrong().nextInt(primeNumbers.length);
+			var index = RandomUtil.getRandomInt(primeNumbers.length);
 			product = (product * primeNumbers[index]) % PRODUCT_LIMIT;
 		}
-		var riddle = new Riddle(java.time.Instant.now(), id, product);
+		var riddle = new RiddleEntry(RandomUtil.getRandomLong(), Instant.now(), product);
+		riddleEntryRepository.saveNew(riddle);
 		return riddle;
 	}
 }
