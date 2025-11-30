@@ -1,5 +1,9 @@
 package org.hinst.web.counter;
 
+import java.time.Instant;
+
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import jakarta.persistence.PersistenceException;
@@ -21,4 +25,8 @@ public interface RiddleEntryRepository extends CrudRepository<RiddleEntry, Long>
 		}
 		throw new PersistenceException("Cannot find unique ID for new riddle entry");
 	}
+
+	@Modifying
+	@Query("DELETE FROM RiddleEntry r WHERE r.createdAt < :dateTime")
+	long deleteOlder(Instant dateTime);
 }
