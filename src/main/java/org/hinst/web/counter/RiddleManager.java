@@ -71,11 +71,12 @@ public class RiddleManager {
 			logger.info("Deleted old riddles: {}", countOfDeleted);
 	}
 
-	public void verifyAnswer(long id, int[] indexes) {
-		var riddleEntry = riddleEntryRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("Riddle not found: " + id));
+	public RiddleResult verifyAnswer(long id, int[] indexes) {
+		var riddleEntry = riddleEntryRepository.findById(id).orElse(null);
+		if (riddleEntry == null)
+			return RiddleResult.NOT_FOUND;
 		if (indexes.length != riddleEntry.getStepCount())
-			throw new IllegalArgumentException("Count of indexes must match count of steps");
+			return RiddleResult.WRONG_STEPS;
 		long product = 1;
 		for (var index : indexes) {
 			var item = primeNumbers[index];
@@ -83,8 +84,9 @@ public class RiddleManager {
 		}
 		var isCorrect = product == riddleEntry.getProduct();
 		if (!isCorrect)
-			throw new IllegalArgumentException("Wrong answer");
+			return RiddleResult.WRONG_ANSWER;
 		riddleEntryRepository.delete(riddleEntry);
+		return RiddleResult.OK;
 	}
 
 	public int[] getPrimeNumbers() {

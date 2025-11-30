@@ -1,15 +1,15 @@
 package org.hinst.web.counter;
 
 import java.util.Map;
-import java.util.Objects;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import io.micrometer.common.util.StringUtils;
 import lombok.NonNull;
@@ -30,8 +30,9 @@ public class CounterController {
 		@RequestBody int[] riddleAnswer
 	) {
 		if (StringUtils.isBlank(url))
-			throw new IllegalArgumentException("URL is required");
-		riddleManager.verifyAnswer(riddleId, riddleAnswer);
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "URL is required");
+		if (riddleManager.verifyAnswer(riddleId, riddleAnswer) != RiddleResult.OK)
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Riddle answer is incorrect");
 		increaseCount(url);
 		logger.info("Pinged URL: {} with headers: {}", url, headers);
 		return "ok";
