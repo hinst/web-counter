@@ -1,3 +1,4 @@
+# The jar file should be ready before building this Docker image
 FROM eclipse-temurin:21.0.9_10-jdk-noble
 RUN mkdir /app
 RUN mkdir /app/data
