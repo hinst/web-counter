@@ -24,10 +24,10 @@ import lombok.RequiredArgsConstructor;
 @EnableScheduling
 public class RiddleManager {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
-	private static final int PRIME_NUMBER_LIMIT = 2000;
+	private static final int PRIME_NUMBER_LIMIT = 1000;
 	private static final int STEP_COUNT = 2;
 	private static final long PRODUCT_LIMIT = 1_000_000_000;
-	private static final long LIFETIME_MINUTES = 5;
+	private static final long LIFETIME_MINUTES = 2;
 
 	@Value("classpath:primeNumbers.json")
 	private Resource primeNumbersFile;
@@ -48,14 +48,14 @@ public class RiddleManager {
 		primeNumbers = Arrays.copyOf(primeNumbers, PRIME_NUMBER_LIMIT);
 	}
 
-	public RiddleEntry generateRiddle() {
+	public RiddleEntry generate() {
 		long product = 1;
 		for (var i = 0; i < STEP_COUNT; ++i) {
 			var index = RandomUtil.getRandomInt(primeNumbers.length);
 			product = (product * primeNumbers[index]) % PRODUCT_LIMIT;
 		}
 		var riddle = new RiddleEntry(
-			RandomUtil.getRandomLong(), Instant.now(),
+			RiddleEntry.generateId(), Instant.now(),
 			product, STEP_COUNT, primeNumbers.length, PRODUCT_LIMIT
 		);
 		riddleEntryRepository.saveNew(riddle);
@@ -64,11 +64,27 @@ public class RiddleManager {
 
 	@Scheduled(initialDelay = 60_000, fixedDelay = 60_000)
 	@Transactional
-	protected void deleteOldRiddles() {
+	protected void deleteOld() {
 		var dateTime = Instant.now().minus(LIFETIME_MINUTES, ChronoUnit.MINUTES);
 		var countOfDeleted = riddleEntryRepository.deleteOlder(dateTime);
 		if (countOfDeleted > 0)
 			logger.info("Deleted old riddles: {}", countOfDeleted);
+	}
+
+	public void verifyAnswer(long id, int[] indexes) {
+		var riddleEntry = riddleEntryRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("Riddle not found: " + id));
+		if (indexes.length != riddleEntry.getStepCount())
+			throw new IllegalArgumentException("Count of indexes must match count of steps");
+		long product = 1;
+		for (var index : indexes) {
+			var item = primeNumbers[index];
+			product = (product * item) % PRODUCT_LIMIT;
+		}
+		var isCorrect = product == riddleEntry.getProduct();
+		if (!isCorrect)
+			throw new IllegalArgumentException("Wrong answer");
+		riddleEntryRepository.delete(riddleEntry);
 	}
 
 	public int[] getPrimeNumbers() {

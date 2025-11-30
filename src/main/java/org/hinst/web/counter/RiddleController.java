@@ -29,6 +29,6 @@ public class RiddleController {
 	@GetMapping("/generate")
 	@ResponseBody
 	public RiddleEntry generateRiddle() {
-		return riddleManager.generateRiddle();
+		return riddleManager.generate();
 	}
 }

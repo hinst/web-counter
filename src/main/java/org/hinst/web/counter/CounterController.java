@@ -6,6 +6,7 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,17 +20,20 @@ import lombok.RequiredArgsConstructor;
 public class CounterController {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	private final UrlEntryRepository urlEntryRepository;
+	private final RiddleManager riddleManager;
 
 	@PostMapping(value = "/ping")
 	public String ping(
 		@RequestHeader Map<String, String> headers,
-		@RequestParam @NonNull String url
+		@RequestParam @NonNull String url,
+		@RequestParam long riddleId,
+		@RequestBody int[] riddleAnswer
 	) {
-		Objects.requireNonNull(url, "URL is required");
 		if (StringUtils.isBlank(url))
-			throw new IllegalArgumentException("URL should be filled in");
-		logger.info("Ping received for URL: {} with headers: {}", url, headers);
+			throw new IllegalArgumentException("URL is required");
+		riddleManager.verifyAnswer(riddleId, riddleAnswer);
 		increaseCount(url);
+		logger.info("Pinged URL: {} with headers: {}", url, headers);
 		return "ok";
 	}
 

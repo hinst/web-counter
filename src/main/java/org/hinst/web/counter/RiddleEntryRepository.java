@@ -16,7 +16,7 @@ public interface RiddleEntryRepository extends CrudRepository<RiddleEntry, Long>
 		for (var i = 0; i < ATTEMPT_LIMIT; ++i) {
 			synchronized (locker) {
 				if (existsById(riddleEntry.getId()))
-					riddleEntry.setId(RandomUtil.getRandomLong());
+					riddleEntry.setId(RiddleEntry.generateId());
 				else {
 					save(riddleEntry);
 					return;

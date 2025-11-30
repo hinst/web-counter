@@ -34,4 +34,8 @@ public class RiddleEntry {
 
 	@Getter
 	private long productLimit;
+
+	public static long generateId() {
+		return RandomUtil.getRandomLong(RandomUtil.MAX_SAFE_INTEGER);
+	}
 }
