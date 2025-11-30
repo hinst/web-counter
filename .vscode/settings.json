@@ -5,6 +5,7 @@
 		"appender",
 		"Appender",
 		"classpath",
+		"Configurer",
 		"hinst",
 		"logback",
 		"springframework",
